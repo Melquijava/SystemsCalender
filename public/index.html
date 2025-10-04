@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <!-- LINHA ESSENCIAL PARA RESPONSIVIDADE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Systems Calender</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- O restante do seu HTML permanece exatamente o mesmo -->
+
+    <!-- CONTAINER DE AUTENTICAÇÃO -->
+    <div id="auth-container" class="active">
+        <div id="login-form" class="auth-form active">
+            <h2>Login - SystemsBSI</h2>
+            <input type="text" id="login-username" placeholder="Nome" required>
+            <input type="password" id="login-password" placeholder="Senha" required>
+            <button id="login-btn">Entrar</button>
+            <p>Não tem uma conta? <a href="#" id="show-register-link">Registre-se aqui</a></p>
+        </div>
+        <div id="register-form" class="auth-form">
+            <h2>Registro de Staff</h2>
+            <input type="text" id="register-username" placeholder="Nome" required>
+            <input type="password" id="register-password" placeholder="Senha" required>
+            <button id="register-btn">Registrar</button>
+            <p>Já possui uma conta? <a href="#" id="show-login-link">Faça o login</a></p>
+        </div>
+    </div>
+
+    <!-- CONTAINER PRINCIPAL DA APLICAÇÃO -->
+    <div id="app-container">
+        <header>
+            <h1>Systems_BSI Calender</h1>
+            <div class="user-controls">
+                <span id="welcome-user"></span>
+                <button id="logout-btn">Sair</button>
+            </div>
+        </header>
+
+        <div id="calendar-controls">
+            <button id="prev-month-btn">&lt;</button>
+            <h2 id="current-month-year"></h2>
+            <button id="next-month-btn">&gt;</button>
+            <button id="today-btn">Hoje</button>
+            <button id="dashboard-btn">Dashboard</button>
+        </div>
+
+        <div id="calendar-grid">
+            <!-- Dias da semana -->
+            <div class="day-name">Dom</div><div class="day-name">Seg</div><div class="day-name">Ter</div>
+            <div class="day-name">Qua</div><div class="day-name">Qui</div><div class="day-name">Sex</div><div class="day-name">Sáb</div>
+            <!-- Células dos dias serão geradas pelo JS -->
+        </div>
+    </div>
+
+    <!-- MODAL DE CRIAÇÃO DE EVENTO -->
+    <div id="event-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Adicionar Evento</h3>
+            <input type="text" id="event-title" placeholder="Título do Evento" required>
+            <textarea id="event-description" placeholder="Descrição (opcional)"></textarea>
+            <label for="event-color">Cor do Evento:</label>
+            <input type="color" id="event-color" value="#00B4D8">
+            <label for="start-date">Data de Início:</label>
+            <input type="date" id="start-date" required>
+            <label for="end-date">Data de Fim:</label>
+            <input type="date" id="end-date" required>
+            <input type="hidden" id="event-creator">
+            <button id="save-event-btn">Salvar Evento</button>
+        </div>
+    </div>
+
+    <!-- MODAL DO DASHBOARD -->
+    <div id="dashboard-modal" class="modal">
+        <div class="modal-content dashboard-content">
+            <span class="close-dashboard-btn close-btn">&times;</span>
+            <h3>Todos os Eventos</h3>
+            <div id="event-list"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
