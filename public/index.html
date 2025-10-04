@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SystemBSI Calendar</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <!-- CONTAINER DE AUTENTICAÇÃO ATUALIZADO -->
+    <!-- CONTAINER DE AUTENTICAÇÃO -->
     <div id="auth-container">
         <div class="auth-form-wrapper">
             <div id="login-form" class="auth-form active">
@@ -30,23 +28,19 @@
         </div>
     </div>
 
-    <!-- NOVA ESTRUTURA DA APLICAÇÃO -->
+    <!-- ESTRUTURA DA APLICAÇÃO -->
     <div id="app-container" class="app-layout">
-
-        <!-- 1. BARRA LATERAL (SIDEBAR) -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h2>SystemBSI</h2>
                 <p>Calendário da equipe</p>
             </div>
-
             <div class="sidebar-section">
                 <h4>Criar evento rápido</h4>
                 <input type="text" id="quick-event-title" placeholder="Título do evento">
                 <input type="date" id="quick-event-date">
                 <button id="quick-save-btn">Salvar Rápido</button>
             </div>
-
             <div class="sidebar-section">
                 <h4>Cor Padrão</h4>
                 <div class="color-palette">
@@ -57,16 +51,13 @@
                     <div class="color-box" style="background: #7209B7;" data-color="#7209B7"></div>
                 </div>
             </div>
-
             <button id="new-event-btn">+ Novo Evento Completo</button>
-
             <div class="user-info">
                 <span id="welcome-user"></span>
                 <button id="logout-btn">Sair</button>
             </div>
         </aside>
 
-        <!-- 2. CONTEÚDO PRINCIPAL -->
         <main class="main-content">
             <header id="calendar-controls">
                 <button id="prev-month-btn" title="Mês Anterior">❮</button>
@@ -74,17 +65,10 @@
                 <button id="next-month-btn" title="Próximo Mês">❯</button>
                 <button id="today-btn">Hoje</button>
             </header>
-
             <div id="calendar-grid">
-                <div class="day-name">Dom</div>
-                <div class="day-name">Seg</div>
-                <div class="day-name">Ter</div>
-                <div class="day-name">Qua</div>
-                <div class="day-name">Qui</div>
-                <div class="day-name">Sex</div>
-                <div class="day-name">Sáb</div>
+                <div class="day-name">Dom</div><div class="day-name">Seg</div><div class="day-name">Ter</div>
+                <div class="day-name">Qua</div><div class="day-name">Qui</div><div class="day-name">Sex</div><div class="day-name">Sáb</div>
             </div>
-
             <div class="bottom-section">
                 <div id="all-events-container">
                     <h3>Todos os Eventos</h3>
@@ -98,7 +82,7 @@
         </main>
     </div>
 
-    <!-- MODAL DE CRIAÇÃO DE EVENTO (Não muda a estrutura interna) -->
+    <!-- MODAL DE CRIAÇÃO DE EVENTO -->
     <div id="event-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -118,5 +102,4 @@
 
     <script src="script.js"></script>
 </body>
-
 </html>

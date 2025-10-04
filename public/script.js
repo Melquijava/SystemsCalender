@@ -1,10 +1,10 @@
-/* public/script.js (VERSÃO REFORMULADA COMPLETA) */
+/* public/script.js (Versão Final Completa) */
 document.addEventListener('DOMContentLoaded', () => {
     // --- ESTADO DA APLICAÇÃO ---
     let currentDate = new Date();
     let events = [];
     let currentUser = null;
-    let selectedColor = '#00B4D8'; // Cor padrão inicial
+    let selectedColor = '#00B4D8';
 
     // --- SELETORES DO DOM ---
     const dom = {
@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
         eventModal: document.getElementById('event-modal'),
         saveEventBtn: document.getElementById('save-event-btn'),
         closeModalBtns: document.querySelectorAll('.close-btn'),
-        // Novos seletores
         quickSaveBtn: document.getElementById('quick-save-btn'),
         colorPalette: document.querySelector('.color-palette'),
         newEventBtn: document.getElementById('new-event-btn'),
@@ -34,11 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         statsContent: document.getElementById('stats-content'),
     };
 
-    /**
-     * Determina a cor do texto (claro ou escuro) com base na cor de fundo para garantir contraste.
-     * @param {string} hexColor - Cor de fundo em formato hexadecimal (ex: '#00B4D8').
-     * @returns {string} - Retorna '#FFFFFF' para fundos escuros ou '#0B132B' para fundos claros.
-     */
+    // --- FUNÇÕES AUXILIARES ---
     const getTextColorForBg = (hexColor) => {
         const r = parseInt(hexColor.substr(1, 2), 16);
         const g = parseInt(hexColor.substr(3, 2), 16);
@@ -47,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return luminance > 0.5 ? '#0B132B' : '#FFFFFF';
     };
 
+    // --- LÓGICA DE UI E DADOS ---
     const updateUI = () => {
         currentUser = JSON.parse(sessionStorage.getItem('systembsi_user'));
         if (currentUser) {
@@ -58,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fetchAndRenderAll();
         } else {
             dom.appContainer.classList.remove('active');
+            dom.appContainer.style.display = 'none';
             dom.authContainer.classList.add('active');
             dom.authContainer.style.display = 'flex';
         }
@@ -70,57 +67,40 @@ document.addEventListener('DOMContentLoaded', () => {
             renderCalendar();
             renderAllEventsList();
             renderStatistics();
-        } catch (error) {
-            console.error("Erro ao buscar e renderizar dados:", error);
-        }
+        } catch (error) { console.error("Erro ao buscar dados:", error); }
     };
 
     const renderCalendar = () => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
         dom.currentMonthYear.textContent = `${currentDate.toLocaleString('pt-BR', { month: 'long' })} de ${year}`;
-
         const dayNamesHTML = `<div class="day-name">Dom</div><div class="day-name">Seg</div><div class="day-name">Ter</div><div class="day-name">Qua</div><div class="day-name">Qui</div><div class="day-name">Sex</div><div class="day-name">Sáb</div>`;
         dom.calendarGrid.innerHTML = dayNamesHTML;
-
         const firstDayOfMonth = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-        for (let i = 0; i < firstDayOfMonth; i++) {
-            dom.calendarGrid.insertAdjacentHTML('beforeend', '<div class="day other-month"></div>');
-        }
-
+        for (let i = 0; i < firstDayOfMonth; i++) { dom.calendarGrid.insertAdjacentHTML('beforeend', '<div class="day other-month"></div>'); }
         for (let day = 1; day <= daysInMonth; day++) {
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             const dayCell = document.createElement('div');
             dayCell.className = 'day';
             dayCell.dataset.date = dateStr;
             dayCell.innerHTML = `<div class="day-number">${day}</div>`;
-
-            if (new Date(dateStr).toDateString() === new Date().toDateString()) {
-                dayCell.classList.add('today');
-            }
-
+            if (new Date(dateStr).toDateString() === new Date().toDateString()) { dayCell.classList.add('today'); }
             const eventsForDay = events.filter(e => {
                 const eventStart = new Date(e.startDate + 'T00:00:00');
                 const eventEnd = new Date(e.endDate + 'T00:00:00');
                 const currentDay = new Date(dateStr + 'T00:00:00');
                 return currentDay >= eventStart && currentDay <= eventEnd;
             });
-
-            if (eventsForDay.length > 0) {
-                dayCell.classList.add('has-events');
-            }
-            
+            if (eventsForDay.length > 0) { dayCell.classList.add('has-events'); }
             eventsForDay.forEach(event => {
                 const eventEl = document.createElement('div');
                 eventEl.className = 'event';
                 eventEl.textContent = event.title;
                 eventEl.style.backgroundColor = event.color;
-                eventEl.style.color = getTextColorForBg(event.color); // Aplica a cor de texto correta
+                eventEl.style.color = getTextColorForBg(event.color);
                 dayCell.appendChild(eventEl);
             });
-            
             dayCell.addEventListener('click', () => openEventModal(dateStr));
             dom.calendarGrid.appendChild(dayCell);
         }
@@ -141,8 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <strong>${event.title}</strong>
                     <span>${new Date(event.startDate+'T00:00').toLocaleDateString('pt-BR')} por: ${event.createdBy}</span>
                 </div>
-                <button class="delete-event-btn" data-id="${event.id}">Excluir</button>
-            `;
+                <button class="delete-event-btn" data-id="${event.id}">Excluir</button>`;
             dom.eventList.appendChild(item);
         });
     };
@@ -150,10 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderStatistics = () => {
         const totalEvents = events.length;
         const members = [...new Set(events.map(e => e.createdBy))];
-        dom.statsContent.innerHTML = `
-            <p><strong>Eventos Totais:</strong> ${totalEvents}</p>
-            <p><strong>Membros Ativos:</strong> ${members.length}</p>
-        `;
+        dom.statsContent.innerHTML = `<p><strong>Eventos Totais:</strong> ${totalEvents}</p><p><strong>Membros Ativos:</strong> ${members.length}</p>`;
     };
 
     const openEventModal = (date) => {
@@ -169,8 +145,33 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.showRegisterLink.addEventListener('click', (e) => { e.preventDefault(); dom.loginForm.classList.remove('active'); dom.registerForm.classList.add('active'); });
     dom.showLoginLink.addEventListener('click', (e) => { e.preventDefault(); dom.registerForm.classList.remove('active'); dom.loginForm.classList.add('active'); });
 
-    // (Listeners de Login/Registro/Logout e Salvar Evento do Modal permanecem os mesmos)
-    // ...
+    dom.registerBtn.addEventListener('click', async () => {
+        const username = document.getElementById('register-username').value;
+        const password = document.getElementById('register-password').value;
+        if (!username || !password) return alert('Nome de usuário e senha são obrigatórios.');
+        const response = await fetch('/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) });
+        const data = await response.json();
+        alert(data.message);
+        if (response.ok) { dom.registerForm.classList.remove('active'); dom.loginForm.classList.add('active'); }
+    });
+
+    dom.loginBtn.addEventListener('click', async () => {
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+        if (!username || !password) return alert('Nome de usuário e senha são obrigatórios.');
+        const response = await fetch('/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) });
+        const data = await response.json();
+        if (response.ok) {
+            sessionStorage.setItem('systembsi_user', JSON.stringify(data.user));
+            updateUI();
+        } else { alert(data.message); }
+    });
+
+    dom.logoutBtn.addEventListener('click', () => { sessionStorage.removeItem('systembsi_user'); updateUI(); });
+    dom.prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+    dom.nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+    dom.todayBtn.addEventListener('click', () => { currentDate = new Date(); renderCalendar(); });
+    dom.closeModalBtns.forEach(btn => btn.addEventListener('click', () => dom.eventModal.classList.remove('active')));
 
     dom.colorPalette.addEventListener('click', (e) => {
         if (e.target.classList.contains('color-box')) {
@@ -183,34 +184,41 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.quickSaveBtn.addEventListener('click', async () => {
         const title = document.getElementById('quick-event-title').value;
         const date = document.getElementById('quick-event-date').value;
-
         if (!title || !date) return alert('Título e data são obrigatórios para o evento rápido.');
-
         const eventData = { title, startDate: date, endDate: date, color: selectedColor, createdBy: currentUser.username };
         const response = await fetch('/events', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(eventData) });
-
-        if(response.ok) {
+        if (response.ok) {
             document.getElementById('quick-event-title').value = '';
+            document.getElementById('quick-event-date').value = '';
             fetchAndRenderAll();
         } else { alert('Erro ao salvar evento rápido.'); }
     });
 
     dom.newEventBtn.addEventListener('click', () => openEventModal(new Date().toISOString().split('T')[0]));
 
+    dom.saveEventBtn.addEventListener('click', async () => {
+        const eventData = {
+            title: document.getElementById('event-title').value,
+            description: document.getElementById('event-description').value,
+            color: document.getElementById('event-color').value,
+            startDate: document.getElementById('start-date').value,
+            endDate: document.getElementById('end-date').value,
+            createdBy: document.getElementById('event-creator').value,
+        };
+        if (!eventData.title || !eventData.startDate || !eventData.endDate) return alert('Título e datas são obrigatórios.');
+        const response = await fetch('/events', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(eventData) });
+        if(response.ok) { dom.eventModal.classList.remove('active'); fetchAndRenderAll(); } else { alert('Erro ao salvar evento.'); }
+    });
+
     dom.eventList.addEventListener('click', async (e) => {
         if (e.target.classList.contains('delete-event-btn')) {
             const eventId = e.target.dataset.id;
             if (confirm('Tem certeza que deseja excluir este evento?')) {
                 const response = await fetch(`/events/${eventId}`, { method: 'DELETE' });
-                if (response.ok) {
-                    fetchAndRenderAll();
-                } else { alert('Falha ao excluir evento.'); }
+                if (response.ok) { fetchAndRenderAll(); } else { alert('Falha ao excluir evento.'); }
             }
         }
     });
-    
-    // (O resto dos listeners, como os de navegação do calendário e fechar modal, permanecem os mesmos)
-    // ...
 
     // --- INICIALIZAÇÃO ---
     updateUI();
