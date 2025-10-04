@@ -1,12 +1,9 @@
-/* public/script.js (VERSÃO FINAL COM CORREÇÃO DE TELA BRANCA) */
+/* public/script.js (Versão Final com Descrição) */
 document.addEventListener('DOMContentLoaded', () => {
-    // --- ESTADO DA APLICAÇÃO ---
     let currentDate = new Date();
     let events = [];
     let currentUser = null;
     let selectedColor = '#00B4D8';
-
-    // --- SELETORES DO DOM ---
     const dom = {
         authContainer: document.getElementById('auth-container'),
         appContainer: document.getElementById('app-container'),
@@ -32,8 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
         eventList: document.getElementById('event-list'),
         statsContent: document.getElementById('stats-content'),
     };
-
-    // --- FUNÇÕES AUXILIARES ---
     const getTextColorForBg = (hexColor) => {
         const r = parseInt(hexColor.substr(1, 2), 16);
         const g = parseInt(hexColor.substr(3, 2), 16);
@@ -41,25 +36,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
         return luminance > 0.5 ? '#0B132B' : '#FFFFFF';
     };
-
-    // --- LÓGICA DE UI E DADOS ---
     const updateUI = () => {
         currentUser = JSON.parse(sessionStorage.getItem('systembsi_user'));
         if (currentUser) {
-            // User is logged in: hide auth, show app
             dom.authContainer.classList.remove('active');
-            dom.appContainer.classList.add('active'); // Apenas a classe é necessária
-
+            dom.appContainer.classList.add('active');
             dom.welcomeUser.textContent = `Olá, ${currentUser.username}`;
             document.getElementById('event-creator').value = currentUser.username;
             fetchAndRenderAll();
         } else {
-            // User is not logged in: hide app, show auth
             dom.appContainer.classList.remove('active');
-            dom.authContainer.classList.add('active'); // Apenas a classe é necessária
+            dom.authContainer.classList.add('active');
         }
     };
-
     const fetchAndRenderAll = async () => {
         try {
             const response = await fetch('/events');
@@ -69,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
             renderStatistics();
         } catch (error) { console.error("Erro ao buscar dados:", error); }
     };
-
     const renderCalendar = () => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
@@ -105,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.calendarGrid.appendChild(dayCell);
         }
     };
-
     const renderAllEventsList = () => {
         dom.eventList.innerHTML = '';
         if (events.length === 0) {
@@ -116,17 +103,21 @@ document.addEventListener('DOMContentLoaded', () => {
         sortedEvents.forEach(event => {
             const item = document.createElement('div');
             item.className = 'event-item';
-            item.innerHTML = `<div class="event-info" style="border-left: 3px solid ${event.color}; padding-left: 8px;"><strong>${event.title}</strong><span>${new Date(event.startDate+'T00:00').toLocaleDateString('pt-BR')} por: ${event.createdBy}</span></div><button class="delete-event-btn" data-id="${event.id}">Excluir</button>`;
+            item.innerHTML = `
+                <div class="event-info" style="border-left: 3px solid ${event.color}; padding-left: 10px;">
+                    <strong>${event.title}</strong>
+                    ${event.description ? `<p class="event-description">${event.description}</p>` : ''}
+                    <span>${new Date(event.startDate+'T00:00').toLocaleDateString('pt-BR')} por: ${event.createdBy}</span>
+                </div>
+                <button class="delete-event-btn" data-id="${event.id}">Excluir</button>`;
             dom.eventList.appendChild(item);
         });
     };
-
     const renderStatistics = () => {
         const totalEvents = events.length;
         const members = [...new Set(events.map(e => e.createdBy))];
         dom.statsContent.innerHTML = `<p><strong>Eventos Totais:</strong> ${totalEvents}</p><p><strong>Membros Ativos:</strong> ${members.length}</p>`;
     };
-
     const openEventModal = (date) => {
         dom.eventModal.classList.add('active');
         document.getElementById('start-date').value = date;
@@ -135,11 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('event-description').value = '';
         document.getElementById('event-color').value = selectedColor;
     };
-
-    // --- EVENT LISTENERS ---
     dom.showRegisterLink.addEventListener('click', (e) => { e.preventDefault(); dom.loginForm.classList.remove('active'); dom.registerForm.classList.add('active'); });
     dom.showLoginLink.addEventListener('click', (e) => { e.preventDefault(); dom.registerForm.classList.remove('active'); dom.loginForm.classList.add('active'); });
-
     dom.registerBtn.addEventListener('click', async () => {
         const username = document.getElementById('register-username').value;
         const password = document.getElementById('register-password').value;
@@ -149,25 +137,19 @@ document.addEventListener('DOMContentLoaded', () => {
         alert(data.message);
         if (response.ok) { dom.registerForm.classList.remove('active'); dom.loginForm.classList.add('active'); }
     });
-
     dom.loginBtn.addEventListener('click', async () => {
         const username = document.getElementById('login-username').value;
         const password = document.getElementById('login-password').value;
         if (!username || !password) return alert('Nome de usuário e senha são obrigatórios.');
         const response = await fetch('/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) });
         const data = await response.json();
-        if (response.ok) {
-            sessionStorage.setItem('systembsi_user', JSON.stringify(data.user));
-            updateUI();
-        } else { alert(data.message); }
+        if (response.ok) { sessionStorage.setItem('systembsi_user', JSON.stringify(data.user)); updateUI(); } else { alert(data.message); }
     });
-
     dom.logoutBtn.addEventListener('click', () => { sessionStorage.removeItem('systembsi_user'); updateUI(); });
     dom.prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
     dom.nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
     dom.todayBtn.addEventListener('click', () => { currentDate = new Date(); renderCalendar(); });
     dom.closeModalBtns.forEach(btn => btn.addEventListener('click', () => dom.eventModal.classList.remove('active')));
-
     dom.colorPalette.addEventListener('click', (e) => {
         if (e.target.classList.contains('color-box')) {
             dom.colorPalette.querySelector('.selected')?.classList.remove('selected');
@@ -175,12 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedColor = e.target.dataset.color;
         }
     });
-
     dom.quickSaveBtn.addEventListener('click', async () => {
         const title = document.getElementById('quick-event-title').value;
         const date = document.getElementById('quick-event-date').value;
         if (!title || !date) return alert('Título e data são obrigatórios para o evento rápido.');
-        const eventData = { title, startDate: date, endDate: date, color: selectedColor, createdBy: currentUser.username };
+        const eventData = { title, startDate: date, endDate: date, color: selectedColor, createdBy: currentUser.username, description: '' };
         const response = await fetch('/events', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(eventData) });
         if (response.ok) {
             document.getElementById('quick-event-title').value = '';
@@ -188,16 +169,13 @@ document.addEventListener('DOMContentLoaded', () => {
             fetchAndRenderAll();
         } else { alert('Erro ao salvar evento rápido.'); }
     });
-
     dom.newEventBtn.addEventListener('click', () => openEventModal(new Date().toISOString().split('T')[0]));
-
     dom.saveEventBtn.addEventListener('click', async () => {
         const eventData = { title: document.getElementById('event-title').value, description: document.getElementById('event-description').value, color: document.getElementById('event-color').value, startDate: document.getElementById('start-date').value, endDate: document.getElementById('end-date').value, createdBy: document.getElementById('event-creator').value, };
         if (!eventData.title || !eventData.startDate || !eventData.endDate) return alert('Título e datas são obrigatórios.');
         const response = await fetch('/events', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(eventData) });
         if(response.ok) { dom.eventModal.classList.remove('active'); fetchAndRenderAll(); } else { alert('Erro ao salvar evento.'); }
     });
-
     dom.eventList.addEventListener('click', async (e) => {
         if (e.target.classList.contains('delete-event-btn')) {
             const eventId = e.target.dataset.id;
@@ -207,7 +185,5 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-
-    // --- INICIALIZAÇÃO ---
     updateUI();
 });
