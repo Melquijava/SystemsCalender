@@ -1,4 +1,4 @@
-/* public/style.css */
+/* public/style.css (versão com correção de overflow) */
 :root {
     --azul-principal: #00B4D8;
     --azul-claro: #90E0EF;
@@ -52,7 +52,18 @@ header h1 { color: var(--azul-principal); margin: 0; }
 /* --- Grid do Calendário --- */
 #calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
 .day-name { text-align: center; font-weight: bold; padding-bottom: 0.5rem; color: var(--azul-claro); }
-.day { background-color: var(--fundo-escuro); min-height: 120px; padding: 8px; border-radius: 4px; cursor: pointer; transition: background-color 0.2s; position: relative; display: flex; flex-direction: column; }
+.day {
+    background-color: var(--fundo-escuro);
+    min-height: 120px;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* ALTERAÇÃO: Impede que o conteúdo vaze */
+}
 .day:hover { background-color: #2A3B57; }
 .day-number { font-weight: bold; margin-bottom: 4px; }
 .day.today .day-number { background-color: var(--azul-principal); color: var(--fundo-escuro); border-radius: 50%; width: 28px; height: 28px; display: flex; justify-content: center; align-items: center; }
@@ -60,7 +71,18 @@ header h1 { color: var(--azul-principal); margin: 0; }
 
 /* --- Eventos no Calendário --- */
 .events-container { overflow-y: auto; flex-grow: 1; }
-.event { font-size: 12px; padding: 4px; margin-top: 4px; border-radius: 4px; color: var(--texto); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.event {
+    font-size: 12px;
+    padding: 4px;
+    margin-top: 4px;
+    border-radius: 4px;
+    color: var(--texto);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box; /* ALTERAÇÃO: Melhora o cálculo da largura */
+    width: 100%;            /* ALTERAÇÃO: Força o evento a respeitar a largura do pai */
+}
 
 /* --- Estilos de Modal --- */
 .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
@@ -79,59 +101,34 @@ header h1 { color: var(--azul-principal); margin: 0; }
 .delete-event-btn { background-color: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
 
 
-/* ------------------------------------ */
 /* --- SEÇÃO DE RESPONSIVIDADE --- */
-/* ------------------------------------ */
-
-/* Para telas menores que 768px (Tablets) */
 @media (max-width: 768px) {
     body { padding: 0.5rem; }
     #app-container { padding: 1rem; }
     header { flex-direction: column; align-items: flex-start; gap: 10px; }
     #calendar-controls { justify-content: center; }
-    #calendar-controls h2 { order: -1; width: 100%; margin-bottom: 10px; } /* Mês/Ano vai para cima */
+    #calendar-controls h2 { order: -1; width: 100%; margin-bottom: 10px; }
     .day { min-height: 90px; padding: 5px; }
     .event { font-size: 11px; padding: 2px; }
     .modal-content { width: 95%; }
 }
 
-/* Para telas menores que 480px (Celulares) */
 @media (max-width: 480px) {
     header h1 { font-size: 1.5rem; }
     .user-controls { width: 100%; display: flex; justify-content: space-between; align-items: center; }
-    
-    #calendar-controls {
-        grid-template-columns: 1fr 1fr; /* Simplifica o layout dos botões */
-        display: grid;
-        gap: 8px;
-    }
-    #calendar-controls h2 { grid-column: 1 / -1; } /* Ocupa a linha inteira */
+    #calendar-controls { grid-template-columns: 1fr 1fr; display: grid; gap: 8px; }
+    #calendar-controls h2 { grid-column: 1 / -1; }
     #prev-month-btn { grid-column: 1; grid-row: 2; }
     #next-month-btn { grid-column: 2; grid-row: 2; }
     #today-btn { grid-column: 1; grid-row: 3; }
     #dashboard-btn { grid-column: 2; grid-row: 3; }
-
     .day-name { font-size: 12px; }
     .day { min-height: 70px; }
     .day-number { font-size: 14px; }
     .day.today .day-number { width: 24px; height: 24px; }
-    .event { display: none; } /* Esconde o texto do evento, muito pequeno */
-
-    /* Em vez de esconder, podemos usar um ponto colorido */
-    .day::after {
-        content: '';
-        display: block;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background-color: var(--azul-principal);
-        margin: 4px auto 0;
-        display: none; /* Escondido por padrão */
-    }
-    .day.has-events::after {
-        display: block; /* Mostra o ponto se o dia tiver evento */
-    }
-
+    .event { display: none; }
+    .day::after { content: ''; display: block; width: 6px; height: 6px; border-radius: 50%; background-color: var(--azul-principal); margin: 4px auto 0; display: none; }
+    .day.has-events::after { display: block; }
     .event-item { flex-direction: column; align-items: flex-start; }
     .delete-event-btn { margin-top: 10px; width: 100%; text-align: center; }
 }

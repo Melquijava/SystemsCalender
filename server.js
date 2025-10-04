@@ -121,7 +121,13 @@ app.delete('/events/:id', async (req, res) => {
 });
 
 // Inicia o servidor
-app.listen(PORT, async () => {
+/* server.js - Final do arquivo */
+
+const HOST = '0.0.0.0';
+
+// Inicia o servidor
+app.listen(PORT, HOST, async () => {
     await initializeDataPersistence();
-    console.log(`Servidor SystemBSI Calendar rodando em http://localhost:${PORT}`);
+    // Apenas para o log ser mais preciso, não afeta a funcionalidade.
+    console.log(`Servidor SystemBSI Calendar rodando publicamente em ${HOST}:${PORT}`);
 });
