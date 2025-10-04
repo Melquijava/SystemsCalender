@@ -1,4 +1,4 @@
-/* public/script.js (Versão Final Completa) */
+/* public/script.js (VERSÃO FINAL COM CORREÇÃO DE TELA BRANCA) */
 document.addEventListener('DOMContentLoaded', () => {
     // --- ESTADO DA APLICAÇÃO ---
     let currentDate = new Date();
@@ -46,17 +46,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateUI = () => {
         currentUser = JSON.parse(sessionStorage.getItem('systembsi_user'));
         if (currentUser) {
+            // User is logged in: hide auth, show app
             dom.authContainer.classList.remove('active');
-            dom.authContainer.style.display = 'none';
-            dom.appContainer.classList.add('active');
+            dom.appContainer.classList.add('active'); // Apenas a classe é necessária
+
             dom.welcomeUser.textContent = `Olá, ${currentUser.username}`;
             document.getElementById('event-creator').value = currentUser.username;
             fetchAndRenderAll();
         } else {
+            // User is not logged in: hide app, show auth
             dom.appContainer.classList.remove('active');
-            dom.appContainer.style.display = 'none';
-            dom.authContainer.classList.add('active');
-            dom.authContainer.style.display = 'flex';
+            dom.authContainer.classList.add('active'); // Apenas a classe é necessária
         }
     };
 
@@ -116,12 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sortedEvents.forEach(event => {
             const item = document.createElement('div');
             item.className = 'event-item';
-            item.innerHTML = `
-                <div class="event-info" style="border-left: 3px solid ${event.color}; padding-left: 8px;">
-                    <strong>${event.title}</strong>
-                    <span>${new Date(event.startDate+'T00:00').toLocaleDateString('pt-BR')} por: ${event.createdBy}</span>
-                </div>
-                <button class="delete-event-btn" data-id="${event.id}">Excluir</button>`;
+            item.innerHTML = `<div class="event-info" style="border-left: 3px solid ${event.color}; padding-left: 8px;"><strong>${event.title}</strong><span>${new Date(event.startDate+'T00:00').toLocaleDateString('pt-BR')} por: ${event.createdBy}</span></div><button class="delete-event-btn" data-id="${event.id}">Excluir</button>`;
             dom.eventList.appendChild(item);
         });
     };
@@ -197,14 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.newEventBtn.addEventListener('click', () => openEventModal(new Date().toISOString().split('T')[0]));
 
     dom.saveEventBtn.addEventListener('click', async () => {
-        const eventData = {
-            title: document.getElementById('event-title').value,
-            description: document.getElementById('event-description').value,
-            color: document.getElementById('event-color').value,
-            startDate: document.getElementById('start-date').value,
-            endDate: document.getElementById('end-date').value,
-            createdBy: document.getElementById('event-creator').value,
-        };
+        const eventData = { title: document.getElementById('event-title').value, description: document.getElementById('event-description').value, color: document.getElementById('event-color').value, startDate: document.getElementById('start-date').value, endDate: document.getElementById('end-date').value, createdBy: document.getElementById('event-creator').value, };
         if (!eventData.title || !eventData.startDate || !eventData.endDate) return alert('Título e datas são obrigatórios.');
         const response = await fetch('/events', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(eventData) });
         if(response.ok) { dom.eventModal.classList.remove('active'); fetchAndRenderAll(); } else { alert('Erro ao salvar evento.'); }
