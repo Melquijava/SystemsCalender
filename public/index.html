@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SystemBSI Calendar</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <!-- CONTAINER DE AUTENTICAÇÃO (Não muda) -->
+    <!-- CONTAINER DE AUTENTICAÇÃO ATUALIZADO -->
     <div id="auth-container">
-        <div id="login-form" class="auth-form active">
-            <h2>Login - SystemBSI</h2>
-            <input type="text" id="login-username" placeholder="Nome" required>
-            <input type="password" id="login-password" placeholder="Senha" required>
-            <button id="login-btn">Entrar</button>
-            <p>Não tem uma conta? <a href="#" id="show-register-link">Registre-se aqui</a></p>
-        </div>
-        <div id="register-form" class="auth-form">
-            <h2>Registro de Staff</h2>
-            <input type="text" id="register-username" placeholder="Nome" required>
-            <input type="password" id="register-password" placeholder="Senha" required>
-            <button id="register-btn">Registrar</button>
-            <p>Já possui uma conta? <a href="#" id="show-login-link">Faça o login</a></p>
+        <div class="auth-form-wrapper">
+            <div id="login-form" class="auth-form active">
+                <h2>Login - SystemBSI</h2>
+                <input type="text" id="login-username" placeholder="Nome de usuário" required>
+                <input type="password" id="login-password" placeholder="Senha" required>
+                <button id="login-btn">Entrar</button>
+                <p>Não tem uma conta? <a href="#" id="show-register-link">Registre-se aqui</a></p>
+            </div>
+            <div id="register-form" class="auth-form">
+                <h2>Registro de Staff</h2>
+                <input type="text" id="register-username" placeholder="Nome de usuário" required>
+                <input type="password" id="register-password" placeholder="Senha" required>
+                <button id="register-btn">Registrar</button>
+                <p>Já possui uma conta? <a href="#" id="show-login-link">Faça o login</a></p>
+            </div>
         </div>
     </div>
 
@@ -42,7 +46,7 @@
                 <input type="date" id="quick-event-date">
                 <button id="quick-save-btn">Salvar Rápido</button>
             </div>
-            
+
             <div class="sidebar-section">
                 <h4>Cor Padrão</h4>
                 <div class="color-palette">
@@ -72,8 +76,13 @@
             </header>
 
             <div id="calendar-grid">
-                <div class="day-name">Dom</div><div class="day-name">Seg</div><div class="day-name">Ter</div>
-                <div class="day-name">Qua</div><div class="day-name">Qui</div><div class="day-name">Sex</div><div class="day-name">Sáb</div>
+                <div class="day-name">Dom</div>
+                <div class="day-name">Seg</div>
+                <div class="day-name">Ter</div>
+                <div class="day-name">Qua</div>
+                <div class="day-name">Qui</div>
+                <div class="day-name">Sex</div>
+                <div class="day-name">Sáb</div>
             </div>
 
             <div class="bottom-section">
@@ -109,4 +118,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>

@@ -1,4 +1,4 @@
-/* public/style.css (VERSÃO REFORMULADA COMPLETA) */
+/* public/style.css (VERSÃO FINAL E COMPLETA) */
 :root {
     --azul-principal: #00B4D8;
     --azul-claro: #90E0EF;
@@ -24,12 +24,79 @@ body {
     overflow-x: hidden;
 }
 
-/* --- AUTENTICAÇÃO --- */
-#auth-container { display: none; justify-content: center; align-items: center; min-height: 100vh; }
-#auth-container.active { display: flex; }
-/* (O resto do CSS de autenticação pode ser mantido ou adaptado se necessário) */
+/* --- SEÇÃO DE AUTENTICAÇÃO (CORRIGIDA) --- */
+#auth-container {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
+#auth-container.active {
+    display: flex;
+}
+.auth-form-wrapper {
+    background-color: var(--fundo-container);
+    padding: 2.5rem 2rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid var(--borda);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.auth-form {
+    display: none;
+    flex-direction: column;
+}
+.auth-form.active {
+    display: flex;
+}
+.auth-form h2 {
+    color: var(--azul-principal);
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+.auth-form input {
+    background: var(--fundo-escuro);
+    border: 1px solid var(--borda);
+    color: var(--texto-principal);
+    padding: 12px;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+.auth-form input:focus {
+    outline: none;
+    border-color: var(--azul-principal);
+}
+.auth-form button {
+    background-color: var(--azul-principal);
+    color: var(--texto-escuro);
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: opacity 0.2s;
+}
+.auth-form button:hover { opacity: 0.9; }
+.auth-form p {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    color: var(--texto-secundario);
+}
+.auth-form a {
+    color: var(--azul-claro);
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+}
 
-/* --- ESTRUTURA PRINCIPAL --- */
+
+/* --- ESTRUTURA PRINCIPAL DA APLICAÇÃO --- */
 .app-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
@@ -98,28 +165,21 @@ h3 { margin-top: 0; color: var(--azul-claro); }
     .main-content { padding: 1.5rem; }
     .bottom-section { grid-template-columns: 1fr; }
 }
-
 @media (max-width: 480px) {
     .main-content { padding: 1rem; }
     #calendar-controls h2 { font-size: 1.2rem; }
     #calendar-controls button { padding: 6px 10px; }
     .day { min-height: 80px; }
-    .event { display: none; } /* Esconde texto em telas muito pequenas */
+    .event { display: none; }
     .day.has-events { position: relative; }
-    .day.has-events::after { /* Mostra um ponto indicador */
-        content: '';
-        position: absolute;
-        bottom: 8px;
-        right: 8px;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background-color: var(--azul-principal);
-        border: 1px solid var(--fundo-celula);
-    }
+    .day.has-events::after { content: ''; position: absolute; bottom: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background-color: var(--azul-principal); border: 1px solid var(--fundo-celula); }
 }
 
-/* (O CSS do MODAL pode ser mantido, pois funciona bem) */
-.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
+/* --- MODAL --- */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
 .modal.active { display: flex; }
-/* ... etc */
+.modal-content { background-color: var(--fundo-container); padding: 2rem; border-radius: 8px; width: 90%; max-width: 500px; position: relative; border: 1px solid var(--borda); }
+.modal-content input, .modal-content textarea, .modal-content button { width: 100%; margin-bottom: 1rem; box-sizing: border-box; }
+.modal-content input, .modal-content textarea { background: var(--fundo-escuro); border: 1px solid var(--borda); color: var(--texto-principal); padding: 10px; border-radius: 4px; }
+.modal-content button { background-color: var(--azul-principal); color: var(--texto-escuro); border: none; padding: 12px; font-weight: bold; cursor: pointer; }
+.close-btn { position: absolute; top: 15px; right: 20px; font-size: 28px; color: var(--texto-secundario); cursor: pointer; }
